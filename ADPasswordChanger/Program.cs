@@ -17,13 +17,13 @@ namespace ADPasswordChanger
             string[] domainElements;
 
             //request for input
-            Console.WriteLine("FQDN-Domain-Name eingeben:");
+            Console.WriteLine("FQDN-Domain-Name:");
             domainName = Console.ReadLine();
-            Console.WriteLine("OU-Pfad eingeben (Beispiel: Schule\\Schueler):");
+            Console.WriteLine("OU-Path (e.g.: Schule\\Schueler):");
             ouString = Console.ReadLine();
 
             if (domainName == string.Empty || ouString == string.Empty) {
-                Console.WriteLine("Fehlerhafte Eingabe");
+                Console.WriteLine("Wrong input");
                 Console.ReadLine();
                 return;
             }
@@ -67,8 +67,26 @@ namespace ADPasswordChanger
                 return;
             }
 
+            //set passwords
+            setPasswords(users);
+
+            Console.WriteLine("done updating");
+            Console.ReadLine();
+
         }
 
+        //sets the passwords to a given list of users
+        private static void setPasswords(List<ADUser> users)
+        {
+            foreach (ADUser user in users)
+            {
+                Console.WriteLine("Setting new password for user: " + user.preName + " " + user.lastName);
+                user.principal.SetPassword("hallo123!");
+                user.principal.Save();
+            }
+        }
+
+        //get a list of all users
         private static List<ADUser> listUsers(string[] domainElements, string[] ouElements, string domainName)
         {
             List<ADUser> users = new List<ADUser>();
@@ -109,6 +127,7 @@ namespace ADPasswordChanger
                 newUser.distinguishedName = found.DistinguishedName;
                 newUser.lastName = found.Surname;
                 newUser.preName = found.GivenName;
+                newUser.principal = found;
                 users.Add(newUser);
             }
 
@@ -117,6 +136,7 @@ namespace ADPasswordChanger
 
         private struct ADUser
         {
+            public UserPrincipal principal;
             public string distinguishedName;
             public string preName;
             public string lastName;
