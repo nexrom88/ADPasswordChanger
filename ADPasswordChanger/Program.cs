@@ -68,7 +68,10 @@ namespace ADPasswordChanger
             }
 
             //set passwords
-            setPasswords(users);
+            List<string> results = setPasswords(users);
+
+            //write output file
+            System.IO.File.WriteAllLines("output.txt", results);
 
             Console.WriteLine("done updating");
             Console.ReadLine();
@@ -76,14 +79,36 @@ namespace ADPasswordChanger
         }
 
         //sets the passwords to a given list of users
-        private static void setPasswords(List<ADUser> users)
+        private static List<string> setPasswords(List<ADUser> users)
         {
+            List<string> results = new List<string>();
             foreach (ADUser user in users)
             {
                 Console.WriteLine("Setting new password for user: " + user.preName + " " + user.lastName);
-                user.principal.SetPassword("hallo123!");
+
+                string newPassword;
+                string[] specialChars = new string[] { "!", "?", "$", "#"};
+                newPassword = user.preName.Substring(0, 1).ToUpper();
+                newPassword += user.preName.Substring(1, 1).ToLower();
+
+                newPassword += user.lastName.Substring(0, 1).ToUpper();
+                newPassword += user.lastName.Substring(1, 1).ToLower();
+
+                //generate random 3 digit number
+                Random rand = new Random();
+                newPassword += rand.Next(100, 999).ToString();
+
+                //add random special char
+                newPassword += specialChars[rand.Next(0, specialChars.Length -1)];
+
+                user.principal.SetPassword(newPassword);
+
                 user.principal.Save();
+
+                results.Add(user.preName + " " + user.lastName + ": " + newPassword);
             }
+
+            return results;
         }
 
         //get a list of all users
