@@ -24,6 +24,7 @@ namespace ADPasswordChanger
 
             if (domainName == string.Empty || ouString == string.Empty) {
                 Console.WriteLine("Fehlerhafte Eingabe");
+                Console.ReadLine();
                 return;
             }
 
@@ -96,7 +97,7 @@ namespace ADPasswordChanger
             //build a user principal
             UserPrincipal userPrincipal = new UserPrincipal(ctx);
 
-            // create the searcher object   
+            //create the searcher object   
             PrincipalSearcher srch = new PrincipalSearcher(userPrincipal);
 
             // find all matches
