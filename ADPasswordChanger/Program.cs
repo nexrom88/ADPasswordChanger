@@ -94,9 +94,9 @@ namespace ADPasswordChanger
                 newPassword += user.lastName.Substring(0, 1).ToUpper();
                 newPassword += user.lastName.Substring(1, 1).ToLower();
 
-                //generate random 3 digit number
+                //generate random 4 digit number
                 Random rand = new Random();
-                newPassword += rand.Next(100, 999).ToString();
+                newPassword += rand.Next(1000, 9999).ToString();
 
                 //add random special char
                 newPassword += specialChars[rand.Next(0, specialChars.Length -1)];
