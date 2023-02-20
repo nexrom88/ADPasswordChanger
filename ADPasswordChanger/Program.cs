@@ -67,6 +67,9 @@ namespace ADPasswordChanger
                 return;
             }
 
+            Console.WriteLine("Found " + users.Count + " users. Press enter to continue. Otherwise close this window.");
+            Console.ReadLine();
+
             //set passwords
             List<string> results = setPasswords(users);
 
@@ -105,7 +108,7 @@ namespace ADPasswordChanger
 
                 user.principal.Save();
 
-                results.Add(user.preName + " " + user.lastName + ": " + newPassword);
+                results.Add(user.preName + " " + user.lastName + " (" + user.distinguishedName + "): " + newPassword);
             }
 
             return results;
